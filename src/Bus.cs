@@ -1,27 +1,36 @@
 using System.Runtime.CompilerServices;
 
-public abstract class Bus
-{
-    // public delegate uint Read(uint addr);
-    // public delegate void Write(uint addr, byte val);
+namespace nes;
 
+internal sealed class Bus
+{
+    public CPU Cpu;
+    public PPU Ppu;
     public byte[] Ram;
 
-    public Bus(byte[] memory)
+
+    public Bus()
     {
-        Ram = memory;
+        Ram = new byte[2048];
+        Ppu = new PPU(this);
+        Cpu = new CPU(this);
     }
 
-    protected void WriteByte(uint addr, byte val)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteByte(uint addr, byte val)
     {
         if (addr >= 0x0000 && addr <= 0xFFFF)
             Ram[addr] = val;
     }
 
-    protected uint ReadByte(uint addr)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public byte ReadByte(ushort address)
     {
-        if (addr >= 0x0000 && addr <= 0xFFFF)
-            return Ram[addr];
+        if (address >= 0x0000 && address <= 0xFFFF)
+        {
+            return Ram[address];
+        }
+        // else if ()
 
         return 0x00;
     }
