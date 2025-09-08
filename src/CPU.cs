@@ -12,16 +12,12 @@ internal sealed partial class CPU
     private int Cycles;
     private Bus Bus;
 
-    private Dictionary<byte, OpCodes> _opcodeMap = new();
-
     public CPU(Bus bus)
     {
         Bus = bus;
         A = X = Y = 0;
         PC = 0XFFC;
         StackPointer = 0x24;
-
-        InitializeInstruction();
     }
 
     private byte Fetch() =>
@@ -34,9 +30,11 @@ internal sealed partial class CPU
             var opCode = Fetch();
             PC++;
 
-            Cycles = _opcodeMap[opCode].CodeAttributes.First().Cycles;
-
-            _opcodeMap[opCode].Action();
+            switch (opCode)
+            {
+                case 0x96: Adc(AddressingModes.Accumulator, 5);
+                    break;
+            }
         }
 
     }
@@ -69,5 +67,11 @@ internal sealed partial class CPU
 
 
     internal byte GetFlag(ushort flag) { return 0; }
-    internal void SetFlag(ushort flag, bool v){}
+    internal void SetFlag(ushort flag, bool v)
+    {
+        if (v)
+            Status |= (byte)flag;
+        else
+            Status &= (byte)~flag;
+    }
 }
