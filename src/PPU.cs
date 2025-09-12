@@ -1,3 +1,4 @@
+#nullable disable
 namespace nes;
 
 internal sealed class PPU
@@ -26,3 +27,5 @@ internal sealed class PPU
     private ushort PPUDATA = 0x2007; // $2007
     private ushort OAMDMA = 0x4014; // $4014
 }
+
+#nullable enable

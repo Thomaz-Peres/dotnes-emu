@@ -17,14 +17,14 @@ internal sealed class Bus
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteByte(uint addr, byte val)
+    public void WriteByte(ushort addr, byte val)
     {
         if (addr >= 0x0000 && addr <= 0xFFFF)
             Ram[addr] = val;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public byte ReadByte(ushort address)
+    public ushort ReadByte(ushort address)
     {
         if (address >= 0x0000 && address <= 0xFFFF)
         {

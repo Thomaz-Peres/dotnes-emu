@@ -6,9 +6,10 @@ internal sealed partial class CPU
     private byte X;
     private byte Y;
     private byte Status; // Status Register (P)
-    private ushort StackPointer;
+    private byte StackPointer;
 
     private ushort PC;
+
     private int Cycles;
     private Bus Bus;
 
@@ -20,7 +21,7 @@ internal sealed partial class CPU
         StackPointer = 0x24;
     }
 
-    private byte Fetch() =>
+    private ushort Fetch() =>
         Bus.ReadByte(PC);
 
     public void EmulateCycle()
@@ -32,7 +33,7 @@ internal sealed partial class CPU
 
             switch (opCode)
             {
-                case 0x96: Adc(AddressingModes.Accumulator, 5);
+                case 0x96: Adc(Accumulator, 5);
                     break;
             }
         }
@@ -50,7 +51,7 @@ internal sealed partial class CPU
     {
         if (GetFlag(StatusFlags.InterruptDisable) == 0)
         {
-            StackPointer = (ushort)(PC + Status); // Should be a PUSH
+            StackPointer = (byte)(PC + Status); // Should be a PUSH
             Status = (byte)StatusFlags.InterruptDisable;
 
             Status = StatusFlags.Break << 0;
