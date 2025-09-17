@@ -24,7 +24,7 @@ internal sealed class Bus
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ushort ReadByte(ushort address)
+    public byte ReadByte(ushort address)
     {
         if (address >= 0x0000 && address <= 0xFFFF)
         {

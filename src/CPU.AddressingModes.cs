@@ -94,7 +94,7 @@ internal sealed partial class CPU
     {
         var baseAddr = NextByte();
         var l = Bus.ReadByte(baseAddr);
-        var h = (ushort)(Bus.ReadByte((ushort)(baseAddr + 1)) & 0xFF);
-        return new OpCode((ushort)(l + (h << 8) + Y), 0);
+        var h = Bus.ReadByte((ushort)(baseAddr + 1)) & 0xFF;
+        return new OpCode((ushort)((l | (h << 8)) + Y), 0);
     }
 }
