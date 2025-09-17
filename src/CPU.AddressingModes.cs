@@ -57,9 +57,44 @@ internal sealed partial class CPU
         return new OpCode(addr, 0);
     }
 
-    internal OpCode AbsX() => new OpCode(0, 0);
-    internal OpCode AbsY() => new OpCode(0, 0);
-    internal OpCode Ind() => new OpCode(0, 0);
-    internal OpCode IndX() => new OpCode(0, 0);
-    internal OpCode IndY() => new OpCode(0, 0);
+    internal OpCode AbsX()
+    {
+        var addr = (ushort)(NextByte() | (NextByte() << 8));
+        var fullAddr = (ushort)(addr + X);
+
+        return new OpCode(fullAddr, 0);
+    }
+
+    internal OpCode AbsY()
+    {
+        var addr = (ushort)(NextByte() | (NextByte() << 8));
+        var fullAddr = (ushort)(addr + Y);
+
+        return new OpCode(fullAddr, 0);
+    }
+
+    internal OpCode Ind()
+    {
+        var l = NextByte();
+        var h = NextByte();
+        var addr = (ushort)(l | (h << 8));
+
+        return new OpCode(addr, 0);
+    }
+
+    internal OpCode IndX()
+    {
+        var baseAddr = (ushort)((NextByte() + X) & 0xFF);
+        var l = Bus.ReadByte(baseAddr);
+        var h = (ushort)(Bus.ReadByte((ushort)(baseAddr + 1)) & 0xFF);
+        return new OpCode((ushort)(l | (h << 8)), 0);
+    }
+
+    internal OpCode IndY()
+    {
+        var baseAddr = NextByte();
+        var l = Bus.ReadByte(baseAddr);
+        var h = (ushort)(Bus.ReadByte((ushort)(baseAddr + 1)) & 0xFF);
+        return new OpCode((ushort)(l + (h << 8) + Y), 0);
+    }
 }
