@@ -17,22 +17,29 @@ internal sealed partial class CPU
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ushort NextByte() => Bus.ReadByte(PC++);
+    private byte NextByte() => Bus.ReadByte(PC++);
 
     internal OpCode Direct() => new OpCode(0, 0);
 
-    internal OpCode Immediate() =>
-        new OpCode(NextByte(), 0);
+    internal OpCode Immediate()
+    {
+        var val = Bus.ReadByte(PC++);
+        return new OpCode(val, 0);
+    }
 
     internal OpCode Relative()
     {
         return new OpCode(0, 0);
     }
 
-    internal OpCode Implied() =>
-        new OpCode(A, 0);
+    internal OpCode Implicit() =>
+        new OpCode(0, 0);
 
-    internal OpCode Accumulator() => new OpCode(0, 0);
+    internal OpCode Accumulator()
+    {
+
+        return new OpCode();
+    }
 
     internal OpCode Zp() =>
         new OpCode(NextByte(), 0);

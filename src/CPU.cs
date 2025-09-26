@@ -17,8 +17,8 @@ internal sealed partial class CPU
     {
         Bus = bus;
         A = X = Y = 0;
-        PC = 0XFFC;
-        StackPointer = 0x24;
+        PC = (ushort)(Bus.ReadByte(0XFFFC) | (Bus.ReadByte(0XFFFD) << 8));
+        StackPointer = 0x24; // 01A0-01FF
     }
 
     private ushort Fetch() =>
@@ -43,7 +43,7 @@ internal sealed partial class CPU
     private void Reset()
     {
         A = X = Y = 0;
-        PC = 0XFFC;
+        PC = (ushort)(Bus.ReadByte(0XFFFC) | (Bus.ReadByte(0XFFFD) << 8));
         StackPointer = 0xFD;
     }
 
