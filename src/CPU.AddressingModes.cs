@@ -21,28 +21,37 @@ internal sealed partial class CPU
 
     internal OpCode Direct() => new OpCode(0, 0);
 
-    internal OpCode Immediate()
-    {
-        var val = Bus.ReadByte(PC++);
-        return new OpCode(val, 0);
-    }
+    internal OpCode Immediate() =>
+        new OpCode(NextByte(), 0);
 
     internal OpCode Relative()
+    {
+        var addr = (ushort)NextByte();
+
+        if ((addr & 0x80) == 1)
+            addr |= 0xFF00;
+
+        return new OpCode(addr, 0);
+    }
+
+    // Implied
+    internal OpCode Implicit()
     {
         return new OpCode(0, 0);
     }
 
-    internal OpCode Implicit() =>
-        new OpCode(0, 0);
-
     internal OpCode Accumulator()
     {
-
-        return new OpCode();
+        A <<= 1;
+        return new OpCode(A, 0);
     }
 
-    internal OpCode Zp() =>
-        new OpCode(NextByte(), 0);
+    internal OpCode Zp()
+    {
+        ushort addr = (ushort)(NextByte() & 0xFF);
+
+        return new OpCode(addr, 4);
+    }
 
     internal OpCode ZpX()
     {
@@ -66,18 +75,28 @@ internal sealed partial class CPU
 
     internal OpCode AbsX()
     {
-        var addr = (ushort)(NextByte() | (NextByte() << 8));
-        var fullAddr = (ushort)(addr + X);
+        var l = NextByte();
+        var h = NextByte();
+        ushort addr = (ushort)(l | (h << 8));
+        addr += X;
 
-        return new OpCode(fullAddr, 0);
+        if ((addr & 0xFF00) != (h << 8))
+            return new OpCode(addr, 1);
+        else
+            return new OpCode(addr, 0);
     }
 
     internal OpCode AbsY()
     {
-        var addr = (ushort)(NextByte() | (NextByte() << 8));
-        var fullAddr = (ushort)(addr + Y);
+        var l = NextByte();
+        var h = NextByte();
+        ushort addr = (ushort)(l | (h << 8));
+        addr += Y;
 
-        return new OpCode(fullAddr, 0);
+        if ((addr & 0xFF00) != (h << 8))
+            return new OpCode(addr, 1);
+        else
+            return new OpCode(addr, 0);
     }
 
     internal OpCode Ind()
@@ -85,6 +104,8 @@ internal sealed partial class CPU
         var l = NextByte();
         var h = NextByte();
         var addr = (ushort)(l | (h << 8));
+
+        addr = (ushort)((Bus.ReadByte((ushort)(addr + 1)) << 8) | Bus.ReadByte((ushort)(addr + 0)));
 
         return new OpCode(addr, 0);
     }
@@ -99,9 +120,15 @@ internal sealed partial class CPU
 
     internal OpCode IndY()
     {
-        var baseAddr = NextByte();
+        var baseAddr = (ushort)(NextByte() & 0xFF);
         var l = Bus.ReadByte(baseAddr);
         var h = Bus.ReadByte((ushort)(baseAddr + 1)) & 0xFF;
-        return new OpCode((ushort)((l | (h << 8)) + Y), 0);
+
+        var addr = (ushort)((l | (h << 8)) + Y);
+
+        if ((addr & 0xFF00) != (h << 8))
+            return new OpCode(addr, 1);
+        else
+            return new OpCode(addr, 0);
     }
 }
