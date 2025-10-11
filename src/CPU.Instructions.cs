@@ -4,7 +4,15 @@ namespace nes;
 
 internal sealed partial class CPU
 {
-    private int Adc(Func<OpCode> adrMode, int cycle)
+    public uint ReadAddress(Func<OpCode> adrMode)
+    {
+        if (adrMode == Implicit)
+            return A;
+
+        return 0;
+    }
+
+    private uint Adc(Func<OpCode> adrMode, uint cycle)
     {
         var addr = adrMode();
 
@@ -24,5 +32,11 @@ internal sealed partial class CPU
         A = (byte)(res & 0xFF);
 
         return cycle + addr.Cycles;
+    }
+
+    private uint And(Func<OpCode> adrMode, uint cycle)
+    {
+        A &= ReadAddress(adrMode);
+        return cycle;
     }
 }

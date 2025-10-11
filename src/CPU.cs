@@ -21,15 +21,11 @@ internal sealed partial class CPU
         StackPointer = 0x24; // 01A0-01FF
     }
 
-    private ushort Fetch() =>
-        Bus.ReadByte(PC);
-
     public void EmulateCycle()
     {
         if (Cycles == 0)
         {
-            var opCode = Fetch();
-            PC++;
+            var opCode = NextByte();
 
             switch (opCode)
             {
@@ -37,7 +33,6 @@ internal sealed partial class CPU
                     break;
             }
         }
-
     }
 
     private void Reset()

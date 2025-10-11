@@ -7,9 +7,9 @@ internal sealed partial class CPU
     internal struct OpCode
     {
         public ushort Address { get; }
-        public int Cycles { get; }
+        public uint Cycles { get; }
 
-        public OpCode(ushort address, int cycles)
+        public OpCode(ushort address, uint cycles)
         {
             Address = address;
             Cycles = cycles;
