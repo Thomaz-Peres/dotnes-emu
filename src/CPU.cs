@@ -62,7 +62,9 @@ internal sealed partial class CPU
     private void NMI() { }
 
 
-    internal byte GetFlag(ushort flag) { return 0; }
+    internal bool GetFlag(ushort flag) =>
+        (Status & flag) != 0;
+
     internal void SetFlag(ushort flag, bool v)
     {
         if (v)

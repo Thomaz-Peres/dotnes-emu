@@ -7,7 +7,7 @@ internal sealed partial class CPU
     internal struct OpCode
     {
         public ushort Address { get; }
-        public uint Cycles { get; }
+        public uint Cycles { get; } = 1;
 
         public OpCode(ushort address, uint cycles)
         {
@@ -19,6 +19,9 @@ internal sealed partial class CPU
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private byte NextByte() => Bus.ReadByte(PC++);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private sbyte NextSignedByte() => (sbyte)NextByte();
+
     internal OpCode Direct() => new OpCode(0, 0);
 
     internal OpCode Immediate() =>
@@ -26,10 +29,9 @@ internal sealed partial class CPU
 
     internal OpCode Relative()
     {
-        var addr = (ushort)NextByte();
+        sbyte offset = (sbyte)NextByte();
 
-        if ((addr & 0x80) == 1)
-            addr |= 0xFF00;
+        ushort addr = (ushort)(PC + offset);
 
         return new OpCode(addr, 0);
     }
