@@ -53,7 +53,7 @@ internal sealed partial class CPU
 
         if (!GetFlag(StatusFlags.Carry))
         {
-            PC = addr.Address;
+            PC += addr.Address;
             cycle++;
 
             if (addr.Cycles > 0)
@@ -63,8 +63,31 @@ internal sealed partial class CPU
         return cycle;
     }
 
-    private uint BCS(Func<OpCode> adrMode, uint cycle)
+    private uint Bcs(Func<OpCode> adrMode, uint cycle)
     {
+        var addr = adrMode();
+
+        if (GetFlag(StatusFlags.Carry))
+        {
+            PC += addr.Address;
+            cycle++;
+
+            if (addr.Cycles > 0)
+                cycle++;
+        }
+
+        return cycle;
+    }
+
+    private uint Beq(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        if (GetFlag(StatusFlags.Zero))
+        {
+            PC += addr.Address;
+
+        }
 
         return cycle;
     }

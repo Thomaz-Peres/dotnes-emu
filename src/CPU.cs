@@ -29,7 +29,10 @@ internal sealed partial class CPU
 
             switch (opCode)
             {
-                case 0x96: Adc(Accumulator, 5);
+                case 0x96:
+                    Adc(Accumulator, 5);
+                    break;
+                case 0xB0: Bcs(Relative, 2);
                     break;
             }
         }
@@ -44,7 +47,7 @@ internal sealed partial class CPU
 
     private void IRQ()
     {
-        if (GetFlag(StatusFlags.InterruptDisable) == 0)
+        if (GetFlag(StatusFlags.InterruptDisable))
         {
             StackPointer = (byte)(PC + Status); // Should be a PUSH
             Status = (byte)StatusFlags.InterruptDisable;
