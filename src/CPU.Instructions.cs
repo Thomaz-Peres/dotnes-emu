@@ -91,4 +91,94 @@ internal sealed partial class CPU
 
         return cycle;
     }
+
+    private uint Lda(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        A = Bus.ReadByte(addr.Address);
+
+        SetFlag(StatusFlags.Zero, A == 0);
+        SetFlag(StatusFlags.Negative, (A & 0x80) != 0);
+
+        if (addr.Cycles > 0)
+            cycle++;
+
+        return cycle;
+    }
+
+    private uint Ldx(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        X = Bus.ReadByte(addr.Address);
+
+        SetFlag(StatusFlags.Zero, X == 0);
+        SetFlag(StatusFlags.Negative, (X & 0x80) != 0);
+
+        if (addr.Cycles > 0)
+            cycle++;
+
+        return cycle;
+    }
+
+    private uint Ldy(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        Y = Bus.ReadByte(addr.Address);
+
+        SetFlag(StatusFlags.Zero, Y == 0);
+        SetFlag(StatusFlags.Negative, (Y & 0x80) != 0);
+
+        if (addr.Cycles > 0)
+            cycle++;
+
+        return cycle;
+    }
+
+    private uint Sta(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        Bus.WriteByte(addr.Address, A);
+
+        return cycle;
+    }
+
+    private uint Stx(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        Bus.WriteByte(addr.Address, X);
+
+        return cycle;
+    }
+
+    private uint Sty(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        Bus.WriteByte(addr.Address, Y);
+
+        return cycle;
+    }
+
+    private uint Jmp(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        PC = Bus.ReadByte(addr.Address);
+
+        return cycle;
+    }
+
+    private uint Jsr(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        PC = Bus.ReadByte(addr.Address);
+
+        return cycle;
+    }
 }
