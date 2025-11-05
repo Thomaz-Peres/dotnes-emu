@@ -27,14 +27,27 @@ internal sealed partial class CPU
         {
             var opCode = NextByte();
 
-            switch (opCode)
+            var x = opCode switch
             {
-                case 0x96:
-                    Adc(Accumulator, 5);
-                    break;
-                case 0xB0: Bcs(Relative, 2);
-                    break;
-            }
+                0xA9 => Lda(Immediate, 2),
+                0xA5 => Lda(Zp, 3),
+                0xB5 => Lda(ZpX, 4),
+                0xAD => Lda(Abs, 4),
+                0xBD => Lda(AbsX, 4),
+                0xB9 => Lda(AbsY, 4),
+                0xA1 => Lda(IndX, 6),
+                0xB1 => Lda(IndY, 5),
+                0xA2 => Ldx(Immediate, 2),
+                0xA6 => Ldx(Zp, 3),
+                0xB6 => Ldx(ZpY, 4),
+                0xAE => Ldx(Abs, 4),
+                0xBE => Ldx(AbsY, 4),
+                0xA0 => Ldy(Immediate, 2),
+                0xA4 => Ldy(Zp, 3),
+                0xB4 => Ldy(ZpX, 4),
+                0xAC => Ldy(Abs, 4),
+                0xBC => Ldy(AbsX, 4),
+            };
         }
     }
 
