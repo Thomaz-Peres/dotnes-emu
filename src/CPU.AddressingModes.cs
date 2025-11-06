@@ -7,12 +7,12 @@ internal sealed partial class CPU
     internal struct OpCode
     {
         public ushort Address { get; }
-        public uint Cycles { get; } = 1;
+        public uint ExtraCycles { get; } = 1;
 
         public OpCode(ushort address, uint cycles)
         {
             Address = address;
-            Cycles = cycles;
+            ExtraCycles = cycles;
         }
     }
 
@@ -36,8 +36,8 @@ internal sealed partial class CPU
         return new OpCode(addr, 0);
     }
 
-    // Implied
-    internal OpCode Implicit()
+    // Implied - Implicit
+    internal OpCode Implied()
     {
         return new OpCode(0, 0);
     }

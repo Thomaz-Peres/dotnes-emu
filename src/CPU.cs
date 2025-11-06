@@ -47,6 +47,10 @@ internal sealed partial class CPU
                 0xB4 => Ldy(ZpX, 4),
                 0xAC => Ldy(Abs, 4),
                 0xBC => Ldy(AbsX, 4),
+                0x18 => ClearFlag(Implied, 2, StatusFlags.Carry, false),
+                0xD8 => ClearFlag(Implied, 2, StatusFlags.Decimal, false),
+                0x58 => ClearFlag(Implied, 2, StatusFlags.InterruptDisable, false),
+                0xB8 => ClearFlag(Implied, 2, StatusFlags.V, false),
             };
         }
     }

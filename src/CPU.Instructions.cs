@@ -21,7 +21,7 @@ internal sealed partial class CPU
 
         A = (byte)(res & 0xFF);
 
-        return cycle + addr.Cycles;
+        return cycle + addr.ExtraCycles;
     }
 
     private uint And(Func<OpCode> adrMode, uint cycle)
@@ -31,7 +31,7 @@ internal sealed partial class CPU
 
         SetFlag(StatusFlags.Zero, A == 0x00);
         SetFlag(StatusFlags.Negative, (A & 0x80) == 7);
-        return cycle + addr.Cycles;
+        return cycle + addr.ExtraCycles;
     }
 
     private uint Asl(Func<OpCode> adrMode, uint cycle)
@@ -44,7 +44,7 @@ internal sealed partial class CPU
         SetFlag(StatusFlags.Zero, value == 0x00);
         SetFlag(StatusFlags.Negative, (value & 0x80) == 0);
 
-        return cycle + addr.Cycles;
+        return cycle + addr.ExtraCycles;
     }
 
     private uint Bcc(Func<OpCode> adrMode, uint cycle)
@@ -56,7 +56,7 @@ internal sealed partial class CPU
             PC += addr.Address;
             cycle++;
 
-            if (addr.Cycles > 0)
+            if (addr.ExtraCycles > 0)
                 cycle++;
         }
 
@@ -72,7 +72,7 @@ internal sealed partial class CPU
             PC += addr.Address;
             cycle++;
 
-            if (addr.Cycles > 0)
+            if (addr.ExtraCycles > 0)
                 cycle++;
         }
 
@@ -101,7 +101,7 @@ internal sealed partial class CPU
         SetFlag(StatusFlags.Zero, A == 0);
         SetFlag(StatusFlags.Negative, (A & 0x80) != 0);
 
-        if (addr.Cycles > 0)
+        if (addr.ExtraCycles > 0)
             cycle++;
 
         return cycle;
@@ -116,7 +116,7 @@ internal sealed partial class CPU
         SetFlag(StatusFlags.Zero, X == 0);
         SetFlag(StatusFlags.Negative, (X & 0x80) != 0);
 
-        if (addr.Cycles > 0)
+        if (addr.ExtraCycles > 0)
             cycle++;
 
         return cycle;
@@ -131,7 +131,7 @@ internal sealed partial class CPU
         SetFlag(StatusFlags.Zero, Y == 0);
         SetFlag(StatusFlags.Negative, (Y & 0x80) != 0);
 
-        if (addr.Cycles > 0)
+        if (addr.ExtraCycles > 0)
             cycle++;
 
         return cycle;
@@ -182,5 +182,15 @@ internal sealed partial class CPU
         return cycle;
     }
 
+    private uint ClearFlag(Func<OpCode> adrMode, uint cycle, ushort flag, bool state)
+    {
+        SetFlag(flag, state);
+        return cycle;
+    }
 
+    private uint Rts(Func<OpCode> adrMode, uint cycle)
+    {
+
+        return cycle;
+    }
 }
