@@ -182,9 +182,66 @@ internal sealed partial class CPU
         return cycle;
     }
 
-    private uint ClearFlag(Func<OpCode> adrMode, uint cycle, ushort flag, bool state)
+    private uint ClearSetFlag(uint cycle, ushort flag, bool state)
     {
         SetFlag(flag, state);
+        return cycle;
+    }
+
+    private uint Tax(uint cycle)
+    {
+        X = A;
+
+        SetFlag(StatusFlags.Zero, X == 0);
+        SetFlag(StatusFlags.Negative, (X & 0x80) != 0);
+
+        return cycle;
+    }
+
+    private uint Tay(uint cycle)
+    {
+        Y = A;
+
+        SetFlag(StatusFlags.Zero, Y == 0);
+        SetFlag(StatusFlags.Negative, (Y & 0x80) != 0);
+
+        return cycle;
+    }
+
+    private uint Tsx(uint cycle)
+    {
+        X = StackPointer;
+
+        SetFlag(StatusFlags.Zero, X == 0);
+        SetFlag(StatusFlags.Negative, (X & 0x80) != 0);
+
+        return cycle;
+    }
+
+    private uint Txa(uint cycle)
+    {
+        A = X;
+
+        SetFlag(StatusFlags.Zero, A == 0);
+        SetFlag(StatusFlags.Negative, (A & 0x80) != 0);
+
+        return cycle;
+    }
+
+    private uint Txs(uint cycle)
+    {
+        StackPointer = X;
+
+        return cycle;
+    }
+
+    private uint Tya(uint cycle)
+    {
+        A = Y;
+
+        SetFlag(StatusFlags.Zero, A == 0);
+        SetFlag(StatusFlags.Negative, (A & 0x80) != 0);
+
         return cycle;
     }
 
