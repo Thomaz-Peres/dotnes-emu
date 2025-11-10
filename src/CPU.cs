@@ -56,13 +56,12 @@ internal sealed partial class CPU
                 0xF8 => ClearSetFlag(2, StatusFlags.Decimal, true), // Implied,
                 0x78 => ClearSetFlag(2, StatusFlags.InterruptDisable, true), // Implied,
 
-
-                0xAA => Tax(2),
-                0xA8 => Tay(2),
-                0xBA => Tsx(2),
-                0x8A => Txa(2),
-                0x9A => Txs(2),
-                0x98 => Tya(2),
+                0xAA => TransferRegister(ref X, A, 2),
+                0xA8 => TransferRegister(ref Y, A, 2),
+                0xBA => TransferRegister(ref X, StackPointer, 2),
+                0x8A => TransferRegister(ref A, X, 2),
+                0x9A => TransferRegister(ref StackPointer, X, 2, false),
+                0x98 => TransferRegister(ref A, Y, 2),
             };
         }
     }
