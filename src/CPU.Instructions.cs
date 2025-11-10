@@ -92,44 +92,15 @@ internal sealed partial class CPU
         return cycle;
     }
 
-    private uint Lda(Func<OpCode> adrMode, uint cycle)
+    // LDA, LDX, LDY
+    private uint LoadMemoryValue(Func<OpCode> adrMode, ref byte dest, uint cycle)
     {
         var addr = adrMode();
 
-        A = Bus.ReadByte(addr.Address);
+        dest = Bus.ReadByte(addr.Address);
 
-        SetFlag(StatusFlags.Zero, A == 0);
-        SetFlag(StatusFlags.Negative, (A & 0x80) != 0);
-
-        if (addr.ExtraCycles > 0)
-            cycle++;
-
-        return cycle;
-    }
-
-    private uint Ldx(Func<OpCode> adrMode, uint cycle)
-    {
-        var addr = adrMode();
-
-        X = Bus.ReadByte(addr.Address);
-
-        SetFlag(StatusFlags.Zero, X == 0);
-        SetFlag(StatusFlags.Negative, (X & 0x80) != 0);
-
-        if (addr.ExtraCycles > 0)
-            cycle++;
-
-        return cycle;
-    }
-
-    private uint Ldy(Func<OpCode> adrMode, uint cycle)
-    {
-        var addr = adrMode();
-
-        Y = Bus.ReadByte(addr.Address);
-
-        SetFlag(StatusFlags.Zero, Y == 0);
-        SetFlag(StatusFlags.Negative, (Y & 0x80) != 0);
+        SetFlag(StatusFlags.Zero, dest == 0);
+        SetFlag(StatusFlags.Negative, (dest & 0x80) != 0);
 
         if (addr.ExtraCycles > 0)
             cycle++;
