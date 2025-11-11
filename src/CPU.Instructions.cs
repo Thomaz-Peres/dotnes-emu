@@ -108,29 +108,11 @@ internal sealed partial class CPU
         return cycle;
     }
 
-    private uint Sta(Func<OpCode> adrMode, uint cycle)
+    private uint SetMemoryValue(Func<OpCode> adrMode, uint cycle, byte src)
     {
         var addr = adrMode();
 
-        Bus.WriteByte(addr.Address, A);
-
-        return cycle;
-    }
-
-    private uint Stx(Func<OpCode> adrMode, uint cycle)
-    {
-        var addr = adrMode();
-
-        Bus.WriteByte(addr.Address, X);
-
-        return cycle;
-    }
-
-    private uint Sty(Func<OpCode> adrMode, uint cycle)
-    {
-        var addr = adrMode();
-
-        Bus.WriteByte(addr.Address, Y);
+        Bus.WriteByte(addr.Address, src);
 
         return cycle;
     }
