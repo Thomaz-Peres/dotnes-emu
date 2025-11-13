@@ -108,6 +108,7 @@ internal sealed partial class CPU
         return cycle;
     }
 
+    // STA, STX, STY
     private uint SetMemoryValue(Func<OpCode> adrMode, uint cycle, byte src)
     {
         var addr = adrMode();
