@@ -109,6 +109,14 @@ internal sealed partial class CPU
                 0xCA => DecXY(2, ref X),
                 0x88 => DecXY(2, ref Y),
 
+                0x0A => Asl(Accumulator, 2),
+                0x06 => Asl(Zp, 5),
+                0x16 => Asl(ZpX, 6),
+                0x0E => Asl(Abs, 6),
+                0x1E => Asl(AbsX, 7),
+
+
+
             };
         }
     }

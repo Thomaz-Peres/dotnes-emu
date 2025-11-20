@@ -217,4 +217,13 @@ internal sealed partial class CPU
         SetFlag(StatusFlags.Negative, (src & 0x80) != 0);
         return cycle;
     }
+
+    private uint Lsr(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+
+
+        return cycle;
+    }
 }
