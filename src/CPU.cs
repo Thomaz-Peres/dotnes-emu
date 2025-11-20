@@ -78,7 +78,7 @@ internal sealed partial class CPU
                 0x98 => TransferRegister(ref A, Y, 2),
 
                 0x69 => Adc(Immediate, 2),
-                0x65 => Adc(Zp,  3),
+                0x65 => Adc(Zp, 3),
                 0x75 => Adc(ZpX, 4),
                 0x6D => Adc(Abs, 4),
                 0x7D => Adc(AbsX, 4),
@@ -87,13 +87,28 @@ internal sealed partial class CPU
                 0x71 => Adc(IndY, 5),
 
                 0xE9 => Sbc(Immediate, 2),
-                0xE5 => Sbc(Zp,  3),
+                0xE5 => Sbc(Zp, 3),
                 0xF5 => Sbc(ZpX, 4),
                 0xED => Sbc(Abs, 4),
                 0xFD => Sbc(AbsX, 4),
                 0xF9 => Sbc(AbsY, 4),
                 0xE1 => Sbc(IndX, 6),
                 0xF1 => Sbc(IndY, 5),
+
+                0xE6 => Inc(Zp, 5),
+                0xF6 => Inc(ZpX, 6),
+                0xEE => Inc(Abs, 6),
+                0xFE => Inc(AbsX, 7),
+                0xE8 => IncXY(2, ref X),
+                0xC8 => IncXY(2, ref Y),
+
+                0xC6 => Dec(Zp, 5),
+                0xD6 => Dec(ZpX, 6),
+                0xCE => Dec(Abs, 6),
+                0xDE => Dec(AbsX, 7),
+                0xCA => DecXY(2, ref X),
+                0x88 => DecXY(2, ref Y),
+
             };
         }
     }
