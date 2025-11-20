@@ -76,6 +76,24 @@ internal sealed partial class CPU
                 0x8A => TransferRegister(ref A, X, 2),
                 0x9A => TransferRegister(ref StackPointer, X, 2, false),
                 0x98 => TransferRegister(ref A, Y, 2),
+
+                0x69 => Adc(Immediate, 2),
+                0x65 => Adc(Zp,  3),
+                0x75 => Adc(ZpX, 4),
+                0x6D => Adc(Abs, 4),
+                0x7D => Adc(AbsX, 4),
+                0x79 => Adc(AbsY, 4),
+                0x61 => Adc(IndX, 6),
+                0x71 => Adc(IndY, 5),
+
+                0xE9 => Sbc(Immediate, 2),
+                0xE5 => Sbc(Zp,  3),
+                0xF5 => Sbc(ZpX, 4),
+                0xED => Sbc(Abs, 4),
+                0xFD => Sbc(AbsX, 4),
+                0xF9 => Sbc(AbsY, 4),
+                0xE1 => Sbc(IndX, 6),
+                0xF1 => Sbc(IndY, 5),
             };
         }
     }

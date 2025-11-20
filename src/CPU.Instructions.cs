@@ -16,7 +16,7 @@ internal sealed partial class CPU
 
         SetFlag(StatusFlags.Carry, res > 0xFF);
         SetFlag(StatusFlags.Zero, res == 0);
-        SetFlag(StatusFlags.V, (res ^ A & res ^ readAddr & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
+        SetFlag(StatusFlags.V, ((res ^ A) & (res ^ readAddr) & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
         SetFlag(StatusFlags.Negative, res != 7);
 
         A = (byte)(res & 0xFF);
@@ -153,6 +153,26 @@ internal sealed partial class CPU
         }
 
         return cycle;
+    }
+
+    private uint Sbc(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        var readAddr = Bus.ReadByte(addr.Address);
+
+        var flag = GetFlag(StatusFlags.Carry) ? 1 : 0;
+
+        var res = A + (~readAddr) + flag;
+
+        SetFlag(StatusFlags.Carry, res > 0xFF);
+        SetFlag(StatusFlags.Zero, res == 0);
+        SetFlag(StatusFlags.V, ((res ^ A) & (res ^ ~readAddr) & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
+        SetFlag(StatusFlags.Negative, (res & 0x80) != 0);
+
+        A = (byte)(res & 0xFF);
+
+        return cycle + addr.ExtraCycles;
     }
 
     private uint Rts(Func<OpCode> adrMode, uint cycle)
