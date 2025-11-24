@@ -17,8 +17,8 @@ internal sealed partial class CPU
     {
         Bus = bus;
         A = X = Y = 0;
-        PC = (ushort)(Bus.ReadByte(0XFFFC) | (Bus.ReadByte(0XFFFD) << 8));
-        StackPointer = 0x24; // 01A0-01FF
+        PC = (ushort)(Bus.ReadByte(0xFFFC) | (Bus.ReadByte(0xFFFD) << 8));
+        StackPointer = 0xFF; // 0100-01FF
     }
 
     public void EmulateCycle()
@@ -115,8 +115,26 @@ internal sealed partial class CPU
                 0x0E => Asl(Abs, 6),
                 0x1E => Asl(AbsX, 7),
 
+                0x4A => Lsr(Accumulator, 2),
+                0x46 => Lsr(Zp, 5),
+                0x56 => Lsr(ZpX, 6),
+                0x4E => Lsr(Abs, 6),
+                0x5E => Lsr(AbsX, 7),
 
+                0x2A => Rol(Accumulator, 2),
+                0x26 => Rol(Zp, 5),
+                0x36 => Rol(ZpX, 6),
+                0x2E => Rol(Abs, 6),
+                0x3E => Rol(AbsX, 7),
 
+                0x6A => Ror(Accumulator, 2),
+                0x66 => Ror(Zp, 5),
+                0x76 => Ror(ZpX, 6),
+                0x6E => Ror(Abs, 6),
+                0x7E => Ror(AbsX, 7),
+
+                0x4C => Jmp(Abs, 3),
+                0x6C => Jmp(Ind, 5)
             };
         }
     }
@@ -125,7 +143,7 @@ internal sealed partial class CPU
     {
         A = X = Y = 0;
         PC = (ushort)(Bus.ReadByte(0XFFFC) | (Bus.ReadByte(0XFFFD) << 8));
-        StackPointer = 0xFD;
+        StackPointer = 0xFF;
     }
 
     private void IRQ()
@@ -158,4 +176,5 @@ internal sealed partial class CPU
         else
             Status &= (byte)~flag;
     }
+
 }

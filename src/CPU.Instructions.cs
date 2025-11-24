@@ -241,7 +241,21 @@ internal sealed partial class CPU
 
         SetFlag(StatusFlags.Carry, (addr.Address & 0x80) != 0);
         SetFlag(StatusFlags.Zero, value == 0x00);
-        SetFlag(StatusFlags.Negative, true);
+        SetFlag(StatusFlags.Negative, (value & 0x80) != 0x80);
+
+        return cycle + addr.ExtraCycles;
+    }
+
+    private uint Ror(Func<OpCode> adrMode, uint cycle)
+    {
+        var addr = adrMode();
+
+        var value = (byte)(addr.Address >> 1 | (GetFlag(StatusFlags.Carry) ? 1 : 0));
+        Bus.WriteByte(addr.Address, value);
+
+        SetFlag(StatusFlags.Carry, (addr.Address & 0x80) != 0);
+        SetFlag(StatusFlags.Zero, value == 0x00);
+        SetFlag(StatusFlags.Negative, (value & 0x80) != 0x80);
 
         return cycle + addr.ExtraCycles;
     }
