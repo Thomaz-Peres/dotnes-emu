@@ -18,7 +18,8 @@ internal sealed partial class CPU
         Bus = bus;
         A = X = Y = 0;
         PC = (ushort)(Bus.ReadByte(0xFFFC) | (Bus.ReadByte(0xFFFD) << 8));
-        StackPointer = 0xFF; // 0100-01FF
+        Status = 0x24;
+        StackPointer = 0xFD; // 01A0-01FF
     }
 
     public void EmulateCycle()
@@ -135,6 +136,9 @@ internal sealed partial class CPU
 
                 0x4C => Jmp(Abs, 3),
                 0x6C => Jmp(Ind, 5)
+
+
+                _ => throw new NotImplementedException($"OpCode {opCode:X2} not implemented.")
             };
         }
     }
@@ -142,8 +146,9 @@ internal sealed partial class CPU
     private void Reset()
     {
         A = X = Y = 0;
+        Status = 0x24;
         PC = (ushort)(Bus.ReadByte(0XFFFC) | (Bus.ReadByte(0XFFFD) << 8));
-        StackPointer = 0xFF;
+        StackPointer -= 3;
     }
 
     private void IRQ()
@@ -176,5 +181,6 @@ internal sealed partial class CPU
         else
             Status &= (byte)~flag;
     }
+
 
 }

@@ -28,20 +28,23 @@ internal sealed partial class CPU
     private uint And(Func<OpCode> adrMode, uint cycle)
     {
         var addr = adrMode();
-        A &= (byte)addr.Address;
+        var value = Bus.ReadByte(addr.Address);
+        A &= value;
 
         SetFlag(StatusFlags.Zero, A == 0x00);
-        SetFlag(StatusFlags.Negative, (A & 0x80) == 7);
+        SetFlag(StatusFlags.Negative, (A & 0x80) != 0);
         return cycle + addr.ExtraCycles;
     }
 
     private uint Asl(Func<OpCode> adrMode, uint cycle)
     {
         var addr = adrMode();
-        var value = (byte)(addr.Address << 1);
+        var value = (byte)addr.Address;
+        SetFlag(StatusFlags.Carry, (value & 0x80) != 0);
+
+        value <<= 1;
         Bus.WriteByte(addr.Address, value);
 
-        SetFlag(StatusFlags.Carry, (addr.Address & 0x80) != 0);
         SetFlag(StatusFlags.Zero, value == 0x00);
         SetFlag(StatusFlags.Negative, (value & 0x80) != 0);
 
@@ -66,10 +69,10 @@ internal sealed partial class CPU
 
     private uint Bcs(Func<OpCode> adrMode, uint cycle)
     {
-        var addr = adrMode();
-
         if (GetFlag(StatusFlags.Carry))
         {
+            var addr = adrMode();
+
             PC += addr.Address;
             cycle++;
 
@@ -123,7 +126,7 @@ internal sealed partial class CPU
     {
         var addr = adrMode();
 
-        PC = Bus.ReadByte(addr.Address);
+        PC = addr.Address;
 
         return cycle;
     }
@@ -132,7 +135,7 @@ internal sealed partial class CPU
     {
         var addr = adrMode();
 
-        PC = Bus.ReadByte(addr.Address);
+        PC = addr.Address;
 
         return cycle;
     }
@@ -222,12 +225,15 @@ internal sealed partial class CPU
     {
         var addr = adrMode();
 
-        var value = (byte)(addr.Address >> 1);
+        var value = (byte)addr.Address;
+
+        SetFlag(StatusFlags.Carry, (value & 0x01) != 0);
+
+        value >>= 1;
         Bus.WriteByte(addr.Address, value);
 
-        SetFlag(StatusFlags.Carry, (addr.Address & 0x80) != 0);
         SetFlag(StatusFlags.Zero, value == 0x00);
-        SetFlag(StatusFlags.Negative, true);
+        SetFlag(StatusFlags.Negative, false);
 
         return cycle + addr.ExtraCycles;
     }
@@ -236,7 +242,12 @@ internal sealed partial class CPU
     {
         var addr = adrMode();
 
-        var value = (byte)(addr.Address << 1 | (GetFlag(StatusFlags.Carry) ? 1 : 0));
+        var value = Bus.ReadByte(addr.Address);
+        bool oldCarry = GetFlag(StatusFlags.Carry);
+
+        SetFlag(StatusFlags.Carry, (value & 0x80) != 0);
+
+        value = (byte)((value << 1) | (oldCarry ? 1 : 0));
         Bus.WriteByte(addr.Address, value);
 
         SetFlag(StatusFlags.Carry, (addr.Address & 0x80) != 0);

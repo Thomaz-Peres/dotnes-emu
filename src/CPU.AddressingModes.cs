@@ -25,7 +25,7 @@ internal sealed partial class CPU
     internal OpCode Direct() => new OpCode(0, 0);
 
     internal OpCode Immediate() =>
-        new OpCode(NextByte(), 0);
+        new OpCode(PC++, 0);
 
     internal OpCode Relative()
     {
@@ -52,7 +52,7 @@ internal sealed partial class CPU
     {
         ushort addr = (ushort)(NextByte() & 0xFF);
 
-        return new OpCode(addr, 4);
+        return new OpCode(addr, 0);
     }
 
     internal OpCode ZpX()

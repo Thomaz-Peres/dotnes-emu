@@ -6,6 +6,8 @@
 # dotenv files
 .env
 
+[Tt]ests/v1
+
 # User-specific files
 *.rsuser
 *.suo
