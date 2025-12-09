@@ -2,15 +2,15 @@ namespace nes;
 
 internal sealed partial class CPU
 {
-    private byte A;
-    private byte X;
-    private byte Y;
-    private byte Status; // Status Register (P)
-    private byte StackPointer;
+    internal byte A;
+    internal byte X;
+    internal byte Y;
+    internal byte Status; // Status Register (P)
+    internal byte StackPointer;
 
-    private ushort PC;
+    internal ushort PC;
 
-    private int Cycles;
+    internal int Cycles;
     private Bus Bus;
 
     public CPU(Bus bus)
@@ -135,7 +135,7 @@ internal sealed partial class CPU
                 0x7E => Ror(AbsX, 7),
 
                 0x4C => Jmp(Abs, 3),
-                0x6C => Jmp(Ind, 5)
+                0x6C => Jmp(Ind, 5),
 
 
                 _ => throw new NotImplementedException($"OpCode {opCode:X2} not implemented.")
