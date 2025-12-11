@@ -20,7 +20,7 @@ internal sealed class Bus
     public void WriteByte(ushort addr, byte val)
     {
         if (addr >= 0x0000 && addr <= 0xFFFF)
-            Ram[addr] = val;
+            Ram[(byte)addr] = val;
     }
 
     /*
@@ -43,7 +43,8 @@ internal sealed class Bus
     {
         if (address >= 0x0000 && address <= 0xFFFF)
         {
-            return Ram[address];
+            var x = Ram[(byte)address];
+            return x;
         }
         // else if ()
 
