@@ -19,8 +19,31 @@ internal sealed class Bus
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteByte(ushort addr, byte val)
     {
-        if (addr >= 0x0000 && addr <= 0xFFFF)
-            Ram[(byte)addr] = val;
+        if (addr <= 0x1FFF)
+        {
+            Ram[addr & 0x07FF] = val;
+            return;
+        }
+
+        Ram[addr & 0x07FF] = val;
+
+        // if (address >= 0x2000 && address <= 0x3FFF)
+        // {
+        //     Ppu.Write((ushort)(address & 0x2007));
+        //     return;
+        // }
+
+        // if (address >= 0x4000 && address <= 0x401F)
+        // {
+        //     Cartridge.Write(address);
+        //     return;
+        // }
+
+        // if (address >= 0x4020)
+        // {
+        //     Cartridge.Write(address);
+        //     return;
+        // }
     }
 
     /*
@@ -41,13 +64,28 @@ internal sealed class Bus
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte ReadByte(ushort address)
     {
-        if (address >= 0x0000 && address <= 0xFFFF)
+        if (address <= 0x1FFF)
         {
-            var x = Ram[(byte)address];
-            return x;
+            return Ram[address & 0x07FF];
         }
-        // else if ()
 
-        return 0x00;
+        // if (address >= 0x2000 && address <= 0x3FFF)
+        // {
+        //     return Ppu.ReadRegister((ushort)(address & 0x0007));
+        // }
+
+        // if (address >= 0x4000 && address <= 0x401F)
+        // {
+        //     return Cartridge.Read(address);
+        // }
+
+        // if (address >= 0x4020)
+        // {
+        //     return Cartridge.Read(address);
+        // }
+
+        return Ram[address & 0x07FF];
+
+        // return 0x00;
     }
 }

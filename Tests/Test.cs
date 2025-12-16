@@ -26,7 +26,7 @@ public sealed class UnitTest1
         public List<List<object>> cycles { get; set; } = new List<List<object>>();
     }
 
-    private static readonly string filePath = @"v1/0a.json";
+    private static readonly string filePath = @"v1/ad.json";
 
 
     Bus? _bus;
@@ -65,14 +65,20 @@ public sealed class UnitTest1
                 _bus.WriteByte((ushort)item[0], (byte)item[1]);
             }
 
-            var x = _cpu.EmulateCycle();
+            if (test.name == "65 cd bc")
+                Debug.WriteLine("Debug");
 
-            Assert.Equal(_cpu.A, test.final.a);
-            Assert.Equal(_cpu.X, test.final.x);
-            Assert.Equal(_cpu.Y, test.final.y);
-            Assert.Equal(_cpu.Status, test.final.p);
-            Assert.Equal(_cpu.PC, test.final.pc);
-            Assert.Equal(_cpu.StackPointer, test.final.s);
+            uint x = _cpu.EmulateCycle();
+
+            if (uint.MaxValue == x)
+                Debug.WriteLine("Debug");
+
+            Assert.Equal(test.final.a, _cpu.A);
+            Assert.Equal(test.final.x, _cpu.X);
+            Assert.Equal(test.final.y, _cpu.Y);
+            Assert.Equal(test.final.p, _cpu.Status);
+            Assert.Equal(test.final.pc, _cpu.PC);
+            Assert.Equal(test.final.s, _cpu.StackPointer);
         }
     }
 }

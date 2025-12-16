@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.Diagnostics;
 
 namespace nes;
 
@@ -12,15 +12,18 @@ internal sealed partial class CPU
 
         var readAddr = Bus.ReadByte(addr.Address);
 
+        Debug.WriteLine($"A: {A} \n Carry Flag: {GetFlag(StatusFlags.Carry)} \n Memoria lida: {readAddr}");
+
         var flag = GetFlag(StatusFlags.Carry) ? 1 : 0;
-        var res = A + readAddr + flag;
+        ushort result = (ushort)(A + readAddr + flag);
+        byte resB = (byte)(result & 0xFF);
 
-        SetFlag(StatusFlags.Carry, res > 0xFF);
-        SetFlag(StatusFlags.Zero, res == 0);
-        SetFlag(StatusFlags.V, ((res ^ A) & (res ^ readAddr) & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
-        SetFlag(StatusFlags.Negative, (res & 0x80) != 0);
+        SetFlag(StatusFlags.Carry, result > 0xFF);
+        SetFlag(StatusFlags.Zero, (result & 0xFF) == 0);
+        SetFlag(StatusFlags.Negative, (result & 0x80) != 0);
+        SetFlag(StatusFlags.V, (~(A ^ readAddr) & (A ^ ((byte)result & 0xFF)) & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
 
-        A = (byte)(res & 0xFF);
+        A = (byte)(result & 0xFF);
 
         return cycle + addr.ExtraCycles;
     }
@@ -39,14 +42,18 @@ internal sealed partial class CPU
     private uint Asl(Func<OpCode> adrMode, uint cycle)
     {
         var addr = adrMode();
-        var value = (byte)addr.Address;
-        SetFlag(StatusFlags.Carry, (value & 0x80) != 0);
+        var result = adrMode == Accumulator ? A : Bus.ReadByte(addr.Address);
+        SetFlag(StatusFlags.Carry, (result & 0x80) != 0);
 
-        value <<= 1;
-        Bus.WriteByte(addr.Address, value);
+        result <<= 1;
 
-        SetFlag(StatusFlags.Zero, value == 0x00);
-        SetFlag(StatusFlags.Negative, (value & 0x80) != 0);
+        if (adrMode == Accumulator)
+            A = result;
+        else
+            Bus.WriteByte(addr.Address, result);
+
+        SetFlag(StatusFlags.Zero, result == 0x00);
+        SetFlag(StatusFlags.Negative, (result & 0x80) != 0);
 
         return cycle + addr.ExtraCycles;
     }

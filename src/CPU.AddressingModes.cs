@@ -44,27 +44,26 @@ internal sealed partial class CPU
 
     internal OpCode Accumulator()
     {
-        A <<= 1;
         return new OpCode(A, 0);
     }
 
     internal OpCode Zp()
     {
-        ushort addr = (ushort)(NextByte() & 0xFF);
+        byte addr = NextByte();
 
         return new OpCode(addr, 0);
     }
 
     internal OpCode ZpX()
     {
-        ushort addr = (ushort)((NextByte() + X) & 0xFF);
+        ushort addr = (ushort)(NextByte() + X);
 
         return new OpCode(addr, 4);
     }
 
     internal OpCode ZpY()
     {
-        ushort addr = (ushort)((NextByte() + Y) & 0xFF);
+        ushort addr = (ushort)(NextByte() + Y);
 
         return new OpCode(addr, 4);
     }
