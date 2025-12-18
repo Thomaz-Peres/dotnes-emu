@@ -11,7 +11,7 @@ internal sealed partial class CPU
     internal ushort PC;
 
     internal int Cycles;
-    private Bus Bus;
+    private readonly Bus Bus;
 
     public CPU(Bus bus)
     {

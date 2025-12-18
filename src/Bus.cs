@@ -27,11 +27,11 @@ internal sealed class Bus
 
         Ram[addr & 0x07FF] = val;
 
-        // if (address >= 0x2000 && address <= 0x3FFF)
-        // {
-        //     Ppu.Write((ushort)(address & 0x2007));
-        //     return;
-        // }
+        if (addr >= 0x2000 && addr <= 0x3FFF)
+        {
+            Ppu.WriteByte((ushort)(addr & 0x0007), val);
+            return;
+        }
 
         // if (address >= 0x4000 && address <= 0x401F)
         // {
@@ -69,10 +69,10 @@ internal sealed class Bus
             return Ram[address & 0x07FF];
         }
 
-        // if (address >= 0x2000 && address <= 0x3FFF)
-        // {
-        //     return Ppu.ReadRegister((ushort)(address & 0x0007));
-        // }
+        if (address >= 0x2000 && address <= 0x3FFF)
+        {
+            return Ppu.ReadByte((ushort)(address & 0x0007));
+        }
 
         // if (address >= 0x4000 && address <= 0x401F)
         // {
