@@ -12,16 +12,13 @@ internal sealed partial class CPU
 
         var readAddr = Bus.ReadByte(addr.Address);
 
-        Debug.WriteLine($"A: {A} \n Carry Flag: {GetFlag(StatusFlags.Carry)} \n Memoria lida: {readAddr}");
-
         var flag = GetFlag(StatusFlags.Carry) ? 1 : 0;
         ushort result = (ushort)(A + readAddr + flag);
-        byte resB = (byte)(result & 0xFF);
 
         SetFlag(StatusFlags.Carry, result > 0xFF);
         SetFlag(StatusFlags.Zero, (result & 0xFF) == 0);
         SetFlag(StatusFlags.Negative, (result & 0x80) != 0);
-        SetFlag(StatusFlags.V, (~(A ^ readAddr) & (A ^ ((byte)result & 0xFF)) & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
+        SetFlag(StatusFlags.V, (~(A ^ result) & (readAddr ^ ((byte)result & 0xFF)) & 0x80) != 0);
 
         A = (byte)(result & 0xFF);
 
@@ -173,15 +170,14 @@ internal sealed partial class CPU
         var readAddr = Bus.ReadByte(addr.Address);
 
         var flag = GetFlag(StatusFlags.Carry) ? 1 : 0;
+        var result = A + (~readAddr) + flag;
 
-        var res = A + (~readAddr) + flag;
+        SetFlag(StatusFlags.Carry, result > 0xFF);
+        SetFlag(StatusFlags.Zero, (result & 0x00FF) == 0);
+        SetFlag(StatusFlags.V, (~(A ^ result) & (readAddr ^ ((byte)result & 0xFF)) & 0x80) != 0);
+        SetFlag(StatusFlags.Negative, (result & 0x80) != 0);
 
-        SetFlag(StatusFlags.Carry, res > 0xFF);
-        SetFlag(StatusFlags.Zero, res == 0);
-        SetFlag(StatusFlags.V, ((res ^ A) & (res ^ ~readAddr) & 0x80) != 0); // I'm bug with this now -> V - Overflow	(result ^ A) & (result ^ memory) & $80	If the result's sign is different from both A's and memory's, signed overflow (or underflow) occurred. Problably a negative, TODO: test later.
-        SetFlag(StatusFlags.Negative, (res & 0x80) != 0);
-
-        A = (byte)(res & 0xFF);
+        A = (byte)(result & 0xFF);
 
         return cycle + addr.ExtraCycles;
     }

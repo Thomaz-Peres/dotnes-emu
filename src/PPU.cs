@@ -5,22 +5,6 @@ internal sealed class PPU
 {
     private readonly Bus Bus;
 
-    public PPU(Bus bus)
-    {
-        Bus = bus;
-    }
-
-    public void WriteByte(ushort addr, byte val)
-    {
-
-    }
-
-    public byte ReadByte(ushort addr)
-    {
-        throw new NotImplementedException();
-    }
-
-
     private const ushort ScreenWidht = 256;
     private const ushort ScreenHeight = 240;
 
@@ -35,6 +19,21 @@ internal sealed class PPU
     private const ushort PPUADDR = 0x2006; // $2006
     private const ushort PPUDATA = 0x2007; // $2007
     private const ushort OAMDMA = 0x4014; // $4014
+
+    public PPU(Bus bus)
+    {
+        Bus = bus;
+    }
+
+    public void WriteByte(ushort addr, byte val)
+    {
+
+    }
+
+    public byte ReadByte(ushort addr)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 #nullable enable
