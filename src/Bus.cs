@@ -7,10 +7,12 @@ internal sealed class Bus
     public CPU Cpu;
     public PPU Ppu;
     public byte[] Ram;
+    private readonly Cartridge cartridge;
 
 
-    public Bus()
+    public Bus(Cartridge cartridge)
     {
+        this.cartridge = cartridge;
         Ram = new byte[2048];
         Ppu = new PPU(this);
         Cpu = new CPU(this);
@@ -24,14 +26,14 @@ internal sealed class Bus
             Ram[addr & 0x07FF] = val;
             return;
         }
-
-        Ram[addr & 0x07FF] = val;
-
-        if (addr >= 0x2000 && addr <= 0x3FFF)
+        else if (addr >= 0x2000 && addr <= 0x3FFF)
         {
-            Ppu.WriteByte((ushort)(addr & 0x0007), val);
+            Ppu.PPUWriteByte((ushort)(0x2000 + (addr & 0x0007)), val);
             return;
         }
+
+
+        // Ram[addr & 0x07FF] = val;
 
         // if (address >= 0x4000 && address <= 0x401F)
         // {
@@ -71,7 +73,7 @@ internal sealed class Bus
 
         if (address >= 0x2000 && address <= 0x3FFF)
         {
-            return Ppu.ReadByte((ushort)(address & 0x0007));
+            return Ppu.PPUReadByte((ushort)(address & 0x0007));
         }
 
         // if (address >= 0x4000 && address <= 0x401F)

@@ -1,4 +1,3 @@
-#nullable disable
 namespace nes;
 
 internal sealed class PPU
@@ -25,15 +24,45 @@ internal sealed class PPU
         Bus = bus;
     }
 
-    public void WriteByte(ushort addr, byte val)
+    public void BusWriteByte(ushort addr, byte val)
     {
+        var x = addr switch
+        {
+            0x0000 => 1,
+            0x0001 => 2,
+            0x0003 => 2,
+            0x0004 => 2,
+            0x0005 => 2,
+            0x0006 => 2,
+            0x0007 => 2,
+            _ => 0
+        };
+    }
+
+    public byte BusReadByte(ushort addr)
+    {
+        return addr switch
+        {
+            0x0000 => 1,
+            0x0001 => 2,
+            0x0003 => 2,
+            0x0004 => 2,
+            0x0005 => 2,
+            0x0006 => 2,
+            0x0007 => 2,
+            _ => 0
+        };
+    }
+
+    public void PPUWriteByte(ushort addr, byte val)
+    {
+        addr &= 0x3FFF;
 
     }
 
-    public byte ReadByte(ushort addr)
+    public byte PPUReadByte(ushort addr)
     {
+        addr &= 0x3FFF;
         throw new NotImplementedException();
     }
 }
-
-#nullable enable

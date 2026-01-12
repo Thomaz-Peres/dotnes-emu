@@ -145,6 +145,8 @@ internal sealed partial class CPU
         Status = 0x24;
         PC = (ushort)(Bus.ReadByte(0XFFFC) | (Bus.ReadByte(0XFFFD) << 8));
         StackPointer -= 3;
+
+        // Cycles = 8;
     }
 
     private void IRQ()
@@ -156,12 +158,11 @@ internal sealed partial class CPU
 
             Status = StatusFlags.Break << 0;
 
-            var high = Bus.ReadByte(0xFFFF);
-            var low = Bus.ReadByte(0xFFFE);
+            var high = Bus.ReadByte(0xFFFA);
+            var low = Bus.ReadByte(0xFFFB);
 
-            PC = (ushort)(high & low);
+            PC = (ushort)((high << 8) & low);
         }
-
     }
 
     private void NMI() { }
