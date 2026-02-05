@@ -3,6 +3,9 @@ namespace nes;
 internal sealed class PPU
 {
     private readonly Bus Bus;
+    private readonly byte[] Vram;
+    private readonly byte[] PalletVram;
+
 
     private const ushort ScreenWidht = 256;
     private const ushort ScreenHeight = 240;
@@ -10,8 +13,7 @@ internal sealed class PPU
     private ushort R, W, x2;
 
     private const ushort PPUCTRL = 0x2000; // $2000
-    private const ushort PPUMASK = 0x2001; // $2001
-    private const ushort PPUSTATUS = 0x2002; // $2002
+    private const ushort PPUMASK = 0x2001; // $2001     private const ushort PPUSTATUS = 0x2002; // $2002
     private const ushort OAMADDR = 0x2003; // $2003
     private const ushort OAMDATA = 0x2004; // $2004
     private const ushort PPUSCROLL = 0x2005; // $2005
@@ -22,6 +24,8 @@ internal sealed class PPU
     public PPU(Bus bus)
     {
         Bus = bus;
+        Vram = new byte[2048];
+        PalletVram = new byte[32];
     }
 
     public void BusWriteByte(ushort addr, byte val)
